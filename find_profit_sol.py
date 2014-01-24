@@ -19,18 +19,18 @@ def initialize(graph, source):
     d[source] = 0 # For the source we know how to reach
     return d, p
 
-def relax(node, neighbour, graph, d, p):
-    # If the distance between the node and the neighbour is lower than the one I have now
-    if d[neighbour] > d[node] + graph[node][neighbour]:
+def relax(node, neighbor, graph, d, p):
+    # If the distance between the node and the neighbor is lower than the one I have now
+    if d[neighbor] > d[node] + graph[node][neighbor]:
         # Record this lower distance
-        d[neighbour]  = d[node] + graph[node][neighbour]
-        p[neighbour] = node
+        d[neighbor]  = d[node] + graph[node][neighbor]
+        p[neighbor] = node
 
 def bellman_ford(graph, source):
     d, p = initialize(graph, source)
     for i in range(len(graph)-1): #Run this until is converges
         for u in graph:
-            for v in graph[u]: #For each neighbour of u
+            for v in graph[u]: #For each neighbor of u
                 relax(u, v, graph, d, p) #Lets relax it
 
     # Step 3: check for negative-weight cycles
@@ -41,14 +41,16 @@ def bellman_ford(graph, source):
                 #print "found neg cycle u,v: " + u + " " + v
                 return d, p
 
+    print "No Arbitrage Opp found"
     return d, p
 
+# we need to convert currency ratios by taking their negative log
 def normalize(arbitrage_g_raw):
     arbitrage_g = {}
     for k, neighbors in arbitrage_g_raw.iteritems():
         arbitrage_g[k] = {}
         for m, weights in neighbors.iteritems():
-            arbitrage_g[k][m] = log(weights)
+            arbitrage_g[k][m] = (-1) * log(weights)
     return arbitrage_g
 
 def test():
